@@ -1,0 +1,41 @@
+def simple_reflex_vacuum_agent(location, status):
+    """
+    Hàm đóng vai trò là 'Bộ não' của Robot (Agent Function).
+    Chỉ dựa vào đầu vào hiện tại để ra quyết định.
+    """
+    if status == 'Dirty':
+        return 'Suck'
+    elif location == 'A':
+        return 'Move Right'
+    elif location == 'B':
+        return 'Move Left'
+
+# --- MÔ PHỎNG MÔI TRƯỜNG ---
+# Trạng thái ban đầu: Vị trí A bẩn, Vị trí B bẩn
+environment = {'A': 'Dirty', 'B': 'Dirty'}
+current_pos = 'A'
+
+print("BẮT ĐẦU CHƯƠNG TRÌNH:")
+print(f"Trạng thái ban đầu: {environment}")
+
+for i in range(4):
+    # 1. Cảm biến (Sensor) nhận tín hiệu từ môi trường
+    current_status = environment[current_pos]
+    
+    # 2. Agent ra quyết định (Decision Making)
+    action = simple_reflex_vacuum_agent(current_pos, current_status)
+    
+    print(f"\n[Bước {i+1}]")
+    print(f"- Vị trí: {current_pos}, Tình trạng: {current_status}")
+    print(f"- Hành động quyết định: {action}")
+
+    # 3. Thực thi hành động và thay đổi môi trường (Actuator)
+    if action == 'Suck':
+        environment[current_pos] = 'Clean'
+    elif action == 'Move Right':
+        current_pos = 'B'
+    elif action == 'Move Left':
+        current_pos = 'A'
+
+print("\n--- Kết quả sau cùng ---")
+print(f"Môi trường: {environment}")
