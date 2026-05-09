@@ -1,38 +1,46 @@
 import random
-M, N = 3, 3
-grid = [[random.choice([0, 1]) for _ in range(N)] for _ in range(M)]
-pos_x = random.randint(0, M - 1)
-pos_y = random.randint(0, N - 1)
+n = 5
+room = [
+    [0, 1, 0, 1, 0],
+    [1, 0, 1, 0, 1],
+    [0, 0, 1, 0, 0],
+    [1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 1]
+]
 
-def get_possible_moves(x, y):
+x, y = 2, 2
 
+def possible_moves(x, y):
     moves = []
     if x > 0: moves.append("UP")
-    if x < M - 1: moves.append("DOWN")
+    if x < n - 1: moves.append("DOWN")
     if y > 0: moves.append("LEFT")
-    if y < N - 1: moves.append("RIGHT")
+    if y < n - 1: moves.append("RIGHT")
     return moves
 
-def run_vacuum(steps):
-    global pos_x, pos_y 
-    
-    print(f"Bản đồ ban đầu: {grid}")
-    
-    for i in range(steps):
-        state_value = grid[pos_x][pos_y]
-        print(f"\n[Bước {i+1}] Robot đang ở ({pos_x}, {pos_y})")
+def move_robot(action, x, y):
+    if action == "UP": x -= 1
+    elif action == "DOWN": x += 1
+    elif action == "LEFT": y -= 1
+    elif action == "RIGHT": y += 1
+    return x, y
 
-        if state_value == 1:
-            print(" -> Trạng thái: BẨN. Hành động: HÚT BỤI")
-            grid[pos_x][pos_y] = 0
-        else:
-            print(" -> Trạng thái: SẠCH. Hành động: DI CHUYỂN")
-            moves = get_possible_moves(pos_x, pos_y)
-            action = random.choice(moves)
+for step in range(20):
+    print(f"\n--- Step {step + 1} ---")
+    print("Robot position:", (x, y))
+    
+    if room[x][y] == 1:
+        print("Status: DIRTY -> Action: SUCK")
+        room[x][y] = 0
+    else:
+        print("Status: CLEAN -> Action: MOVE")
+        moves = possible_moves(x, y)
+        action = random.choice(moves)
+        print("Moving:", action)
+        x, y = move_robot(action, x, y)
 
-            if action == "UP": pos_x -= 1
-            elif action == "DOWN": pos_x += 1
-            elif action == "LEFT": pos_y -= 1
-            elif action == "RIGHT": pos_y += 1
-            print(f" -> Hướng di chuyển đã chọn: {action}")
-run_vacuum(6)
+    for r in range(n):
+        row_display = list(room[r])
+        if r == x:
+            row_display[y] = "R"
+        print(row_display)
