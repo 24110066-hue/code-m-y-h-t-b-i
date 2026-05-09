@@ -23,11 +23,9 @@ def run_vacuum(steps):
         print(f"\n[Bước {i+1}] Robot đang ở ({pos_x}, {pos_y})")
 
         if state_value == 1:
-            # Nếu bẩn -> Hút bụi
             print(" -> Trạng thái: BẨN. Hành động: HÚT BỤI")
             grid[pos_x][pos_y] = 0
         else:
-            # Nếu sạch -> Di chuyển ngẫu nhiên theo các hướng cho phép
             print(" -> Trạng thái: SẠCH. Hành động: DI CHUYỂN")
             moves = get_possible_moves(pos_x, pos_y)
             action = random.choice(moves)
