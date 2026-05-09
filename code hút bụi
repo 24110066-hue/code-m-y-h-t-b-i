@@ -1,53 +1,49 @@
 import random
 
-class MatrixVacuumAgent:
-    def __init__(self, m, n):
-        self.m = m # Số hàng
-        self.n = n # Số cột
-        # Khởi tạo ma trận: 0 là sạch, 1 là bẩn
-        self.grid = [[random.choice([0, 1]) for _ in range(n)] for _ in range(m)]
-        # Vị trí robot (x, y) ngẫu nhiên
-        self.pos_x = random.randint(0, m - 1)
-        self.pos_y = random.randint(0, n - 1)
+# --- CẤU HÌNH MÔI TRƯỜNG ---
+M, N = 3, 3  # Kích thước ma trận
+# Khởi tạo ma trận ngẫu nhiên: 0 (sạch), 1 (có bụi)
+grid = [[random.choice([0, 1]) for _ in range(N)] for _ in range(M)]
 
-    def get_possible_moves(self, x, y):
-        """Hàm xác định các hướng đi có thể (phần bên phải của bảng)"""
-        moves = []
-        if x > 0: moves.append("UP")
-        if x < self.m - 1: moves.append("DOWN")
-        if y > 0: moves.append("LEFT")
-        if y < self.n - 1: moves.append("RIGHT")
-        return moves
+# Vị trí ban đầu của Robot (x, y)
+pos_x = random.randint(0, M - 1)
+pos_y = random.randint(0, N - 1)
 
-    def step(self):
-        x, y = self.pos_x, self.pos_y
-        state_value = self.grid[x][y]
-        
-        print(f"Vị trí: ({x}, {y}) | Trạng thái ô: {'Bẩn' if state_value == 1 else 'Sạch'}")
+def get_possible_moves(x, y):
+    """Xác định các hướng có thể đi dựa vào tọa độ hiện tại"""
+    moves = []
+    if x > 0: moves.append("UP")
+    if x < M - 1: moves.append("DOWN")
+    if y > 0: moves.append("LEFT")
+    if y < N - 1: moves.append("RIGHT")
+    return moves
 
-        # --- RULES TRÊN BẢNG ---
-        # Rule 1: Nếu bẩn thì hút bụi
+def run_vacuum(steps):
+    global pos_x, pos_y # Sử dụng biến toàn cục để cập nhật vị trí
+    
+    print(f"Bản đồ ban đầu: {grid}")
+    
+    for i in range(steps):
+        state_value = grid[pos_x][pos_y]
+        print(f"\n[Bước {i+1}] Robot đang ở ({pos_x}, {pos_y})")
+
+        # QUY TẮC PHẢN XẠ (Simple Reflex Rules)
         if state_value == 1:
-            print("==> Hành động: HÚT BỤI (Suck)")
-            self.grid[x][y] = 0 # state_value = 0
-        
-        # Rule 2: Nếu sạch thì di chuyển ngẫu nhiên trong các hướng cho phép
+            # Nếu bẩn -> Hút bụi
+            print(" -> Trạng thái: BẨN. Hành động: HÚT BỤI")
+            grid[pos_x][pos_y] = 0
         else:
-            possible_moves = self.get_possible_moves(x, y)
-            action = random.choice(possible_moves)
-            print(f"==> Hành động: DI CHUYỂN ({action})")
+            # Nếu sạch -> Di chuyển ngẫu nhiên theo các hướng cho phép
+            print(" -> Trạng thái: SẠCH. Hành động: DI CHUYỂN")
+            moves = get_possible_moves(pos_x, pos_y)
+            action = random.choice(moves)
             
-            # Cập nhật tọa độ dựa trên hành động
-            if action == "UP": self.pos_x -= 1
-            elif action == "DOWN": self.pos_x += 1
-            elif action == "LEFT": self.pos_y -= 1
-            elif action == "RIGHT": self.pos_y += 1
+            # Cập nhật tọa độ mới
+            if action == "UP": pos_x -= 1
+            elif action == "DOWN": pos_x += 1
+            elif action == "LEFT": pos_y -= 1
+            elif action == "RIGHT": pos_y += 1
+            print(f" -> Hướng di chuyển đã chọn: {action}")
 
-# Chạy thử nghiệm với ma trận 3x3
-m, n = 3, 3
-bot = MatrixVacuumAgent(m, n)
-
-print(f"Ma trận ban đầu: {bot.grid}")
-for i in range(5):
-    print(f"\n--- Bước {i+1} ---")
-    bot.step()
+# Chạy thử 6 bước mô phỏng
+run_vacuum(6)
