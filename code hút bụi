@@ -1,16 +1,11 @@
 import random
-
-# --- CẤU HÌNH MÔI TRƯỜNG ---
-M, N = 3, 3  # Kích thước ma trận
-# Khởi tạo ma trận ngẫu nhiên: 0 (sạch), 1 (có bụi)
+M, N = 3, 3
 grid = [[random.choice([0, 1]) for _ in range(N)] for _ in range(M)]
-
-# Vị trí ban đầu của Robot (x, y)
 pos_x = random.randint(0, M - 1)
 pos_y = random.randint(0, N - 1)
 
 def get_possible_moves(x, y):
-    """Xác định các hướng có thể đi dựa vào tọa độ hiện tại"""
+
     moves = []
     if x > 0: moves.append("UP")
     if x < M - 1: moves.append("DOWN")
@@ -19,7 +14,7 @@ def get_possible_moves(x, y):
     return moves
 
 def run_vacuum(steps):
-    global pos_x, pos_y # Sử dụng biến toàn cục để cập nhật vị trí
+    global pos_x, pos_y 
     
     print(f"Bản đồ ban đầu: {grid}")
     
@@ -27,7 +22,6 @@ def run_vacuum(steps):
         state_value = grid[pos_x][pos_y]
         print(f"\n[Bước {i+1}] Robot đang ở ({pos_x}, {pos_y})")
 
-        # QUY TẮC PHẢN XẠ (Simple Reflex Rules)
         if state_value == 1:
             # Nếu bẩn -> Hút bụi
             print(" -> Trạng thái: BẨN. Hành động: HÚT BỤI")
@@ -37,13 +31,10 @@ def run_vacuum(steps):
             print(" -> Trạng thái: SẠCH. Hành động: DI CHUYỂN")
             moves = get_possible_moves(pos_x, pos_y)
             action = random.choice(moves)
-            
-            # Cập nhật tọa độ mới
+
             if action == "UP": pos_x -= 1
             elif action == "DOWN": pos_x += 1
             elif action == "LEFT": pos_y -= 1
             elif action == "RIGHT": pos_y += 1
             print(f" -> Hướng di chuyển đã chọn: {action}")
-
-# Chạy thử 6 bước mô phỏng
 run_vacuum(6)
