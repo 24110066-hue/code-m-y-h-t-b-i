@@ -1,41 +1,53 @@
-def simple_reflex_vacuum_agent(location, status):
-    """
-    Hàm đóng vai trò là 'Bộ não' của Robot (Agent Function).
-    Chỉ dựa vào đầu vào hiện tại để ra quyết định.
-    """
-    if status == 'Dirty':
-        return 'Suck'
-    elif location == 'A':
-        return 'Move Right'
-    elif location == 'B':
-        return 'Move Left'
+import random
 
-# --- MÔ PHỎNG MÔI TRƯỜNG ---
-# Trạng thái ban đầu: Vị trí A bẩn, Vị trí B bẩn
-environment = {'A': 'Dirty', 'B': 'Dirty'}
-current_pos = 'A'
+class MatrixVacuumAgent:
+    def __init__(self, m, n):
+        self.m = m # Số hàng
+        self.n = n # Số cột
+        # Khởi tạo ma trận: 0 là sạch, 1 là bẩn
+        self.grid = [[random.choice([0, 1]) for _ in range(n)] for _ in range(m)]
+        # Vị trí robot (x, y) ngẫu nhiên
+        self.pos_x = random.randint(0, m - 1)
+        self.pos_y = random.randint(0, n - 1)
 
-print("BẮT ĐẦU CHƯƠNG TRÌNH:")
-print(f"Trạng thái ban đầu: {environment}")
+    def get_possible_moves(self, x, y):
+        """Hàm xác định các hướng đi có thể (phần bên phải của bảng)"""
+        moves = []
+        if x > 0: moves.append("UP")
+        if x < self.m - 1: moves.append("DOWN")
+        if y > 0: moves.append("LEFT")
+        if y < self.n - 1: moves.append("RIGHT")
+        return moves
 
-for i in range(4):
-    # 1. Cảm biến (Sensor) nhận tín hiệu từ môi trường
-    current_status = environment[current_pos]
-    
-    # 2. Agent ra quyết định (Decision Making)
-    action = simple_reflex_vacuum_agent(current_pos, current_status)
-    
-    print(f"\n[Bước {i+1}]")
-    print(f"- Vị trí: {current_pos}, Tình trạng: {current_status}")
-    print(f"- Hành động quyết định: {action}")
+    def step(self):
+        x, y = self.pos_x, self.pos_y
+        state_value = self.grid[x][y]
+        
+        print(f"Vị trí: ({x}, {y}) | Trạng thái ô: {'Bẩn' if state_value == 1 else 'Sạch'}")
 
-    # 3. Thực thi hành động và thay đổi môi trường (Actuator)
-    if action == 'Suck':
-        environment[current_pos] = 'Clean'
-    elif action == 'Move Right':
-        current_pos = 'B'
-    elif action == 'Move Left':
-        current_pos = 'A'
+        # --- RULES TRÊN BẢNG ---
+        # Rule 1: Nếu bẩn thì hút bụi
+        if state_value == 1:
+            print("==> Hành động: HÚT BỤI (Suck)")
+            self.grid[x][y] = 0 # state_value = 0
+        
+        # Rule 2: Nếu sạch thì di chuyển ngẫu nhiên trong các hướng cho phép
+        else:
+            possible_moves = self.get_possible_moves(x, y)
+            action = random.choice(possible_moves)
+            print(f"==> Hành động: DI CHUYỂN ({action})")
+            
+            # Cập nhật tọa độ dựa trên hành động
+            if action == "UP": self.pos_x -= 1
+            elif action == "DOWN": self.pos_x += 1
+            elif action == "LEFT": self.pos_y -= 1
+            elif action == "RIGHT": self.pos_y += 1
 
-print("\n--- Kết quả sau cùng ---")
-print(f"Môi trường: {environment}")
+# Chạy thử nghiệm với ma trận 3x3
+m, n = 3, 3
+bot = MatrixVacuumAgent(m, n)
+
+print(f"Ma trận ban đầu: {bot.grid}")
+for i in range(5):
+    print(f"\n--- Bước {i+1} ---")
+    bot.step()
