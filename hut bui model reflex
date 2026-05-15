@@ -1,0 +1,21 @@
+internal_model = {'A': None, 'B': None}
+def get_action(location, status):
+    global internal_model
+    
+    internal_model[location] = status
+    
+    if status == 'Dirty':
+        return 'SUCK'
+    
+    other_location = 'B' if location == 'A' else 'A'
+    
+    if internal_model[other_location] == 'Clean':
+        return 'STOP'
+    else:
+        return 'MOVE_RIGHT' if location == 'A' else 'MOVE_LEFT'
+
+
+print(f"Bước 1 (Tại A, Bẩn): {get_action('A', 'Dirty')}") 
+print(f"Bước 2 (Tại A, Sạch): {get_action('A', 'Clean')}") 
+print(f"Bước 3 (Tại B, Bẩn): {get_action('B', 'Dirty')}") 
+print(f"Bước 4 (Tại B, Sạch): {get_action('B', 'Clean')}") 
