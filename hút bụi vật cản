@@ -1,0 +1,55 @@
+https://github.com/24110066-hue/code-m-y-h-t-b-i/new/main
+import random
+import time
+n = 5
+
+room = [
+    [0, 1, 0, 1, 0],
+    [1, 0, 0, 0, 1],
+    [0, 0, 1, 0, 0],
+    [1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0]
+]
+
+x, y = 2, 1 
+
+def possible_moves(x, y):
+    moves = []
+    if x > 0 and room[x-1][y] != 1: moves.append("UP")
+    if x < n - 1 and room[x+1][y] != 1: moves.append("DOWN")
+    if y > 0 and room[x][y-1] != 1: moves.append("LEFT")
+    if y < n - 1 and room[x][y+1] != 1: moves.append("RIGHT")
+    return moves
+
+def move_robot(action, x, y):
+    if action == "UP": x -= 1
+    elif action == "DOWN": x += 1
+    elif action == "LEFT": y -= 1
+    elif action == "RIGHT": y += 1
+    return x, y
+
+for step in range(15):
+    print(f"\n--- Bước {step + 1} ---")
+    print(f"Robot đang ở: ({x}, {y})")
+    moves = possible_moves(x, y)
+    
+    if not moves:
+        print("Trạng thái: BỊ KẸT! (Bốn phía đều là vật cản/tường)")
+        break
+    
+    action = random.choice(moves)
+    print(f"Lựa chọn hướng: {action} (Né các ô có số 1)")
+
+    x, y = move_robot(action, x, y)
+    for r in range(n):
+        row_display = []
+        for c in range(n):
+            if r == x and c == y:
+                row_display.append(" R ") 
+            elif room[r][c] == 1:
+                row_display.append("[X]")
+            else:
+                row_display.append(" . ")
+        print("".join(row_display))
+    
+    time.sleep(0.5)
